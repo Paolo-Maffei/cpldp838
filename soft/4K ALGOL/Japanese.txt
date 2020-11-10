@@ -1,0 +1,58 @@
+4K ALGOL (ALGOL-8)のCPLDP-8とterminでの使用法
+
+1. マニュアル
+4K ALGOL (DEC-08-KAYA-D)
+
+2. コンパイル手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で alg8cmpl.ssb (コンパイラ)を送る。
+OPT- の表示で T を入力しテレタイプ入出力を選択。
+[Receive]-[Raw File] で test.bin (コンパイル出力)を指定。
+[Send]-[Text File] で test.txt (ソース)を送る。
+コンパイル終了で停止。
+[Receive]-[End] で出力ファイルを閉じる。
+
+3. 実行手順(SINなど関数を使用しない場合)
+CPLDP-8をリセット。
+[Send]-[Raw File] で binload.ris (binary loader)を送る。
+(binload.ris は \soft\utility に収録)
+[Send]-[Binary File] で test.bin (コンパイル出力)を送る。
+[Send]-[Raw File] で alg8os3.bin (ALGOL OS)を送ると実行。
+
+4. 実行手順(関数を使用する場合)
+CPLDP-8をリセット。
+[Send]-[Raw File] で binload.ris (binary loader)を送る。
+[Send]-[Binary File] で test.bin (コンパイル出力)を送る。
+[Send]-[Raw File] で alg8os4.bin (ALGOL OS)を送る。
+停止後 [Send]-[End] でalg8os4.binを閉じる。
+ここでterminを一旦終了して再起動する。
+CONTINUEスイッチを押す。
+[Send]-[Raw File] で alg8os5.bin (ALGOL OVERLAY)を送ると実行。
+(注)terminを一度終了してシリアル系のゴミを排除する。USB-serial変換使用の場合
+    PurgeComm()では除去しきれなかった。
+
+5. コンパイルできない場合の診断
+2.でコンパイル出力ファイルを指定せず画面に表示させると、誤りがあれば最後の行に
+エラーコードが表示される。意味はマニュアル7章を参照。
+(注：付属のtest.txtではエラーコードは出ない)
+
+6. 参考
+コンパイラはCPLDP-8用のself start形式にした。ALGOL OSはbinary loaderから起動する
+ため開始アドレスを付加したほか、以下の変更を加えた。
+
+alg8cmpl.ssb
+元のbinary: DEC-08-KA1A-PB
+alg8os3.bin
+元のbinary: DEC-08-KA3A-PB
+alg8os5.bin
+元のbinary: DEC-08-KA5A-PB
+
+alg8os4.bin
+元のbinary: DEC-08-KA4A-PB
+address
+7516 SMA CLA → SKP CLA      入力をテレタイプに固定
+7424 HLT     → JMP IZ 0000  7600からの追加部分へ行く
+0000 7600
+7600 HLT
+7601 JMP I 7602              binary loaderへ行く
+7602 7701

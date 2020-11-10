@@ -1,0 +1,67 @@
+termin VT52 v2.2 CPLDP-8 terminal software manual by omiokone
+
+This version adds an ESC sequence to make termin compatible with VT52 terminals.
+However, it is limited to the function to run the VISTA editor.
+The usage is the same as the regular version.
+
+As with the VT52, you cannot see the screen before scrolling, so make the following settings on OS / 8.
+.SET TTY WIDTH 80
+.SET TTY HEIGHT 24
+.SET TTY PAGE
+.SET TTY PAUSE 60
+.SET TTY SCOPE
+As a result, when one screen is exceeded by DIR etc., it is paused, and it is stopped by [Ctrl] + [S] and [Ctrl] + [Q].
+You can resume. However, it is valid only for software that uses the OS / 8 device handler.
+This setting can be reused by saving the disc.
+Even if these are not set, it does not affect the operation of VISTA.
+
+Keyboard VISTA features
+
+Tenkey (Num Lock)
+            / *-
+            scroll up scroll down search
+7 8 9
+first page page up last page
+4 5 6 +
+mark line pick up put down command mode
+one two Three
+word left page down word right
+0.
+insert line home cursor
+
+The upper key is also assigned to the following for models without a numeric keypad
+                normal shift
+left arrow left arrow word left
+up arrow up arrow command mode
+right arrow right arrow word right
+down arrow down arrow mark line
+Insert insert line put down
+Delete delete pick up
+Home home cursor first page
+End search last page
+Page Up page down scroll down
+Page Down page up scroll up
+Since page up / down has the opposite meaning to Windows, it is assigned this way.
+
+The following is the same as the real VT52
+Backspace backspace delete
+Tab tab right
+ESC 1 insert block
+ESC 2 delete screen
+ESC 3 truncate file
+
+Control Keys
+^ A transparent char 			^ L delete to end of word
+^ B mark modified lines 		^ M return code
+^ C abort to OS / 8 			^ N restore screen
+^ D cursor to start of line 	^ P invert case
+^ E tab left 					^ R continuous replace
+^ F cursor to end of line 		^ T step replace
+^ G unmark line 				^ U delete line
+^ H backspace delete 			^ W cursor away
+^ I tab right 					^ Y cursor to next line
+^ J insert char toggle 			^ Z close file
+^ K delete word
+
+Concatenation of two lines moves to the end of the previous line and executes ^ U. ... is added at the end
+(Once you scroll out and back, it will appear on one line).

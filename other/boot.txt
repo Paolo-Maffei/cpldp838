@@ -1,0 +1,87 @@
+/ CPLDP-8 ROM BOOT
+
+/ CPLDP-8 SPECIAL INSTRUCTION
+EOF=6004                    / EXTRA FIELD OFF
+EON=6007                    / EXTRA FIELD ON
+
+*0000
+START,  CLA CLL
+        KCC
+        KSF                 / READ ONE CHARACTER
+        JMP .-1
+        KRB
+        DCA 0100
+        TAD 0100
+        CLL RAL             / IF 200 OR CHANNEL7=1 THEN RIM BOOT
+        RTL
+        RTL
+        SPA
+        JMP RIM
+        SNL
+        JMP OS8
+        SZA
+        JMP OS8
+RIM,    CLA CLL IAC RTL     / RIM BOOT, JMP TO 7754
+        CML RTL
+        IAC
+        CMA
+        DCA 0101
+        TAD 0100
+        JMP I 0101
+OS8,    CLA                 / OS8 BOOT
+        DCA 0100
+        CLA CLL CML IAC RTR / MAKE 7600
+        CLL CML IAC RTR
+        CLL CML RAR
+        DCA 0102
+        TAD 0102
+        DCA 0101
+LOOP1,  EON                 / DISK BLOCK 0 000-177
+        TAD I 0100          / TO CORE 17600-17777
+        EOF
+        CDF 10
+        DCA I 0101
+        CDF 00
+        ISZ 0100
+        ISZ 0101
+        JMP LOOP1
+        TAD 0102
+        DCA 0101
+LOOP2,  EON                 / DISK BLOCK 0 200-377
+        TAD I 0100          / TO CORE 07600-07777
+        EOF
+        DCA I 0101
+        ISZ 0100
+        ISZ 0101
+        JMP LOOP2
+        CLA CLL IAC RTL     / JUMP TO 7605 OS/8 DESTRUCTIVE ENTRY
+        IAC
+        TAD 0102
+        DCA 0101
+        OSR                 / SWITCH TO RAM MODE (SPECIAL INSTRUCTION)
+        JMP I 0101
+
+/ RIM LOADER
+*7750
+        KCC 
+        KSF                 / GET 1ST BYTE
+        JMP .-1
+        KRB
+        CLL RTL
+        RTL
+        SPA                 / IF MSB OF BYTE IS 1, IGNORE IT
+        JMP 7751
+        RTL
+        KSF                 / GET 2ND BYTE
+        JMP .-1
+        KRS
+        SNL                 / IF CHANNEL7 OF 1ST BYTE IS 1, ADDRESS
+        JMP 7770
+        DCA 7776            / ADDRESS
+        JMP 7750
+        DCA I 7776          / DATA
+        ISZ 7776            / IF ADDRESS IS 7777, END OF LOAD
+        JMP 7750
+        OSR                 / SWITCH TO RAM MODE (SPECIAL INSTRUCTION)
+        JMP I 7777          / START LOADED PROGRAM
+$

@@ -1,0 +1,11 @@
+'BEGIN' 'COMMENT' FACTORIALS;
+'INTEGER'   I;
+'REAL'      R;
+R:=1.0;
+'FOR' I:=1 'STEP' 1 'UNTIL' 10 'DO'
+'BEGIN'
+  R:=R*I;
+  WRITE(1,R); SKIP;
+'END'
+'END'
+$

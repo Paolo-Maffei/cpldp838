@@ -1,0 +1,77 @@
+termin v2.1 CPLDP-8 terminal software manual by omiokone
+
+termin is terminal software for operating CPLDP-8 from a serially connected Windows PC.
+
+1. Installation
+  Put termin.exe in a suitable folder.
+  Create a shortcut for termin.exe.
+  Right-click on the shortcut to open its properties.
+  The link destination of the shortcut tab should be as follows, for example.
+    "C: \ Program Files \ termin \ termin.exe"
+  Add 3 arguments here as in the example below.
+    "COM1: baud = 19200 data = 8 parity = N stop = 1" "c: \ pdp8" "35"
+  The first argument is the port specification, and COM1 is the port name to which CPLDP-8 is connected.
+  The second argument is the default folder name in the file open dialog, which you transfer to CPLDP-8.
+  Specify the name of the actual folder where the file is placed.
+  The third argument is the character time interval (msec) when sending a text file.
+
+2. Uninstall
+  Delete termin.exe. I'm not using the registry.
+
+3. Startup and operation
+  Start from the shortcut created in 1.
+  
+  menu
+  Exit Exit.
+  Send
+    Send the raw file as it is.
+    Send without trailer (last 80H sequence) of Binary File file.
+    Set the MSB of each character in the Text File file to 1 and send it with the specified spacing between the characters.
+                 Do not send Line Feed.
+    Forcibly terminates transmission on End.
+  Receive
+    Receive raw file as it is.
+    Text File The MSB of each character is masked and saved as 0.
+    File reception on End is performed until it ends at End.
+  Clear screen clear
+
+  [Ctrl] + [@] (00) [Ctrl] + [^] (1E) [Ctrl] + [_] (1F) cannot be used together with the [Ctrl] key.
+  If the [Send] or [Recieve] item is disabled, the previous file remains open.
+  Since it is, close it with [End].
+
+4. Windows CE version
+  From the WinCE folder, rename the one that matches the CPU of your model to termin.exe and use it.
+  Unlike the Windows version, the first argument is only the port specification such as "COM1:", and the baud rate etc. is specified.
+  But it is ignored.
+
+5. Change font
+  You can change the default Courier New, which can be used on old Windows, to other monospaced fonts.
+  Specify the 4th argument "Consolas" etc. for the shortcut.
+  Get Teleprinter Bold (TELE_B.TTF) by Mark Zanzig and put it in \ WINDOWS \ Fonts
+  You can make it teletype by specifying "Teleprinter Bold".
+
+6. Character transfer problem
+  An error occurs when sending the text of the program to the paper tape version of FOCAL or BASIC. this
+  Are for low-speed teletypes, and hard flow because they take in unlimited buffers with interrupts.
+  Control is useless. It was solved by slowing down the transfer speed.
+  It is ideal to specify the character spacing and line end time like TeraTerm, but the optimum time depends on the software.
+  Since it is different and complicated, only the character spacing is used.
+
+7. Compile
+  When compiling with Visual Stdio
+  Project Properties> Configuration Properties> General> Character Set> None
+  Project Properties> Configuration Properties> C / C ++> Code Generation>
+  Runtime Library> Multithreaded (/ MT)
+  Specified as.
+
+8. Development history
+  The following functions are required for the terminal software for PDP-8.
+  Most software inputs and outputs characters with 7-bit mark parity. On the other hand, binary is 8-bit transfer.
+  b. Transfer binary files raw (without using Xmodem etc.).
+  c. Setting the character transfer rate described in 6.
+  d. In CPLDP-8, cut 80H at the end of the binary with 4K FORTRAN.
+  e. CPLDP-8 checks CTS every 1 byte for 19200 baud transfer without buffer.
+     There is a need.
+  Since there is no software that satisfies all of these, we developed it by diverting our own old code.
+  I did not use overlapped I / O to share it with the Windows CE version, but for use on recent PCs
+  Since it is impossible, it was completely rewritten in v2.1.

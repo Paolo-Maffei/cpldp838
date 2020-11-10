@@ -1,0 +1,212 @@
+CPLDP-8 OS/8説明書
+
+注意
+OS/8はキー先行入力ができないので、プロンプトの表示まで操作しない。
+コマンド入力は必ず大文字。小文字は認識できず?を返す。
+
+1. OS/8の起動方法
+terminの既定フォルダにdiskload.risとos8a.rfとを置く
+terminを起動。CPLDP-8をリセット
+[Send]-[Raw file] でdiskload.risを送る
+[Send]-[Raw file] でos8a.rfを送る
+約4分で停止 CPLDP-8をリセット スペースキーを押す
+. が表示されたらOSのコマンド入力待ち。
+入力の一文字取り消しは[Del]。一行取り消しは[Ctrl]+[U]。
+
+作業後のディスクを保存するには
+コマンド待ちの状態でCPLDP-8をリセット
+[Receive]-[Raw File] で保存ファイル名を指定
+[Send]-[Raw file] でdisksave.risを送る
+停止後
+[Receive]-[End] で出力ファイルを閉じる
+
+参考: boot ROMは最初の1byte目が80HかMSBの次のbitが1の場合RIMローダを実行、それ
+以外はOS/8を起動。OS/8の時この1byteは破棄される。
+
+2. よく使うコマンド
+DIR (DIRECTORY)     ファイル一覧の表示(DIR/Aで名前順)
+DEL (DELETE)        ファイルの削除
+REN (RENAME)        ファイル名変更   REN 新しい名前<古い名前
+COPY                ファイルのコピー COPY コピー先<コピー元
+TY  (TYPE)          テキストファイルの印字
+*?のワイルドカードが使える。
+ディスクのデバイス名はSYS:、RF:は使えない。
+ファイルの書き込みには連続した領域が必要。必要なら空き領域をまとめる。
+.SQUISH SYS:
+ARE YOU SURE? にYを入力。
+
+OS/8マニュアル
+AA-H607-TA OS/8 SYSTEM REFERENCE MANUAL
+AA-H608-TA OS/8 TECO REFERENCE MANUAL
+AA-H609-TA OS/8 LANGUAGE REFERENCE MANUAL
+DEC-S8-OSHBA-A-D OS/8 handbook 1974は網羅的だが古いバージョンのもの。
+
+3. テキストファイルの作り方
+EDITでは手間がかかるので、PC上で編集したものを流し込む方法。
+.R PIP
+*TEST.TX<TTY:/A (TEST.TXをつくる /AはASCIIモードオプション)
+入力待ちになったらterminの[Send]-[Text]で用意したファイルを送る
+転送後[Ctrl]+[Z]で抜け*が表示されたら[ESC]で終了
+
+4. SIMH
+PDP-8シミュレータSIMHとos8packを使いPC上でos8a.rfへのソフトの追加などができる。
+os8.txtを以下に変更
+SET DF DISABLE
+SET RF ENABLE 1P
+ATT RF os8a.rf
+ATT RK0 os8.rk05
+BOOT RK0
+os8a.rfのデバイス名は RF:
+作業後、以下の操作でos8a.rfを更新
+[Ctrl]+[E]      (SIMHに戻る)
+DET RF          (イメージファイル書き込み)
+
+SIMHでos8a.rfにSQUISH RF:を施すにはSYS:のPIP.SVをos8a.rfにある容量224K用の物と
+交換する必要がある。
+
+5. OS/8で紙テープ用ソフトを実行する方法
+上記のSIMH環境で os8.txt に下を追加
+ATT PTR XXX (XXXは読み込むbinary file)
+.R PIP
+*RF:XXX.BN<PTR:/B
+^が表示されたらCtlr-Z [ESC]で抜ける
+CPLDP-8のOS/8上で
+.R ABSLDR
+*XXX.BN=00200/G (00200はソフトにより異なる開始番地)
+ABSLDRはchecksumを調べるのでbinary fileはCPLDP-8用でない元のが必要。
+Rコマンドで実行可能なXXX.SVを作るには/Gなしで直後に
+.SAVE RF XXX
+
+--------------------------------------------------------------------------------
+各ソフトの簡単な使用法
+
+1. PAL8
+ディスク上のTEST.PAをアセンブルして実行。
+.R PAL8
+*TEST/G
+
+2. FORTRAN II
+ディスク上のTEST2.FTをコンパイルして実行。
+.R FORT
+*TEST2/G
+関連ファイル
+FORT.SV LIB8.RL LIBSET.SV LOADER.SV SABR.SV
+
+3. FORTRAN IV
+ディスク上のTEST4.FTをコンパイルして実行。
+.R F4
+*TEST4/G
+*が表示されたら[ESC]
+最後の*でファイルをFORTRANのデバイスに割り当てる指示ができる。[ESC]は指示終了。
+詳しくはマニュアルのFRTSの項参照。
+関連ファイル
+F4.SV FORLIB.RL FRTS.SV LIBRA.SV LOAD.SV PASS2.SV PASS2O.SV PASS3.SV RALF.SV
+
+4. BASIC
+起動方法
+.R BASIC
+NEW OR OLDで新しいソースを作る場合NEWを入力
+*に対しファイル名を入力
+ダイレクト実行はできない。
+最後にEND文がないとエラーになる。
+必要なら終了(BYE)前にSAVEが必要。
+関連ファイル
+BASIC.AF BASIC.FF BASIC.SF BASIC.SV BCOMP.SV BLOAD.SV BRTS.SV
+STRTRK.BAを動かすには31blocksの作業領域が必要。不要なファイルを消してSQUISHで
+詰めておく。
+
+5. FOCAL71
+起動方法
+.R PFOCAL
+DO YOU WANT... に Y[Enter]
+終了方法
+*LIBRARY EXIT (省略形 L E)
+入出力をファイルに切換えられる。
+OPEN INPUT ファイル名
+OPEN OUTPUT ファイル名
+ファイル出力の場合、最後に OUTPUT CLOSE を実行。
+コンソールに戻すにはファイル名にTTY:を指定。
+
+6. MACREL
+ディスク上のTEST.PAをアセンブルして実行。
+.R MACREL
+*TEST<TEST.PA/G
+関連ファイル
+MACREL.SV LINK.SV KREF.SV
+
+以下のソフトはos8b.rfに収録。
+7. RogAlgol
+ディスク上のTEST.ALをコンパイルして実行。
+.R ALGCOM
+*TEST<TEST
+.R RALGOL
+*TEST.AC (行末は[ESC])
+実行後は[Ctrl]+[C]で終了。
+関連ファイル
+ALGCOM.SV RALGOL.SV
+
+8. Pascal
+ディスク上のTEST.PSをコンパイルして実行。
+.R P,PASCAL,TEST
+.R P,TEST
+関連ファイル
+P.SV PASCAL.PB PASCAL.TX PMD.PB
+
+9. SNOBOL
+ディスク上のTEST.SNをコンパイルして実行。
+.R SNOBOL
+*TEST.PA<TEST.SN
+.PAL SNORTS.PR-NB,TEST
+.LOAD SNORTS,TEST
+.SAVE SYS TEST
+.R TEST
+(LOADのあと実行ファイルTEST.SVを作らず.STARTでそのまま実行もできる)
+関連ファイル
+SNOBOL.SV SNORTS.PR SNORTS.BN
+
+10. LISP
+起動方法
+.R LISP
+終了方法
+EXIT()
+ディスク上のTEST.LIの実行。
+IOPEN(SYS TEST LI)
+
+11. VISTA
+動かすにはterminをVT52版にする必要がある。
+起動方法
+.R VISTA
+終了方法
+[Ctrl]+[Z] または [Ctrl]+[C] (強制終了)
+マニュアル DECUS8-938 VISTA EDITOR
+関連ファイル
+VISTA.SV VCM0.SV
+
+--------------------------------------------------------------------------------
+OS/8 CPLDP-8版 技術解説
+
+PDP-8は3bit fieldにより4Kword×8=32Kwordのメモリが最大だが、CPLDP-8はさらに3bit
+extra fieldで32Kword×8=256Kwordを持つ。extra field 111が通常のPDP-8のメモリで
+000～110がRAM disk。
+
+OS/8の内部は OS/8 software support manual DEC-S8-OSSMB-A-D を参照。
+
+本物のRF08ディスクでの起動。
+メモリに手入力(またはROM)のローダはディスクのblock0の前半128ワードをメモリ
+06604～に転送し06622から実行。
+06653～07003を17647～17777に転送(field 1 resident portion)。
+ブロック0の後半128ワード(field 0 resident portion)をメモリ07600～に転送(07750の
+値は最初0途中転送で07750に書き換えられる事に注意)し07605(OS/8 destructive entry)
+から実行。
+
+CPLDP-8はboot ROMで直接メモリ上に展開する。block0内の配置は本物と同じ。
+block0 000～177 → memory 17600～17777 (実際の常駐部は17647～17777)
+       200～377 →        07600～07777
+07607～のsystem device handlerは書き換えてある。
+
+07605の実行でブロック007～012 keyb'd monitorを00000～に転送し00400から実行。
+keyb'd monitorでブロック013～015 user service routineを読み込む。
+
+os8a.rfはSIMHでRF08ディスクイメージ(256Kword)を作成し、ディレクトリを224Kword
+に修正。PIPとRESORCは独自のデバイス情報を持つのでパッチが必要。これらは上記マニ
+ュアルのappendixを参照。

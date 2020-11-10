@@ -1,0 +1,36 @@
+FOCALのCPLDP-8とterminでの使用法
+
+1. マニュアル
+FOCAL Programming Manual (DEC-08-AJAD-D)
+FOCAL入門に適している。
+ADVANCED FOCAL (DEC-08-AJBB-DL)
+FOCAL文法書。
+
+2. 起動方法
+CPLDP-8をリセット。
+[Send]-[Raw File] で focal.ssb を送る。
+terminに*が表示されて FOCALの入力待ちになる。T 1+2,![Enter]と入力し下の表示が出
+れば成功。
+*T 1+2,!
+=    3.0000
+*
+
+3. 使用上のヒント
+入力中の一文字消去は[Del](コード7F テレタイプの[RUBOUT]キー)。一行全部取消しは
+[_](コード5Fテレタイプの[←]キー)。
+基本的に大文字のみなのでキーボードをCaps Lockしておく。
+変数名は最初の2文字しか認識しない。例えばA11とA12は同じ変数を表す。
+変数名はF以外で始める。
+E ALLで記憶域消去。実行停止は[Ctrl]+[C]。
+長いプログラムはPC上のエディタで作成して、terminの[Send]-[Text File]で読み込むと
+よい。
+
+4. 参考
+元のbinary: DEC-08-AJAE-PB FOCAL69 + init
+            DEC-08-AJ1E-PB 4 words, 8K overlay
+DEC-08-AJAE-PBは(80Hで区切られた)前半部分のみ使用。後半部分は起動時ユーザーに質
+問し数学関数を使わないとユーザー領域を増やせるしくみだが、起動がわずらわしいので
+省いた。
+DEC-08-AJ1E-PBは前半は実数精度を上げる、後半は使用メモリを8Kにするオーバーレイで
+後半のみ使用。
+これらを1つにまとめCPLDP-8用のself start形式にした。

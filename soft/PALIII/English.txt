@@ -1,0 +1,43 @@
+Usage of PALIII assembler with CPLDP-8 and termin
+
+1. Manual
+PAL III SYMBOLIC ASSEMBLER PDP-8 PROGRAMMING MANUAL (DEC-08-ASAC-D)
+
+2. Assembling procedure
+Reset CPLDP-8.
+Send pal3.ssb (assembler) with [Send]-[Raw File].
+Send test.txt (source) with [Send]-[Text File] (path 1).
+If you stop. Press the CONTINUE switch,
+Specify test.bin (assemble output) in [Receive]-[Raw File].
+Send test.txt with [Send]-[Text File] (path 2).
+If you stop.
+Click [Receive]-[End] to close the output file.
+The following can be omitted.
+Press the CONTINUE switch,
+Send test.txt with [Send]-[Text File] (path 3).
+The source list is output.
+
+3. Execution procedure
+Reset CPLDP-8.
+Send binload.ris (binary loader) with [Send]-[Raw File].
+(binload.ris is in \ soft \ utility)
+Send test.bin (assembled output binary) with [Send]-[Raw File] to start execution.
+
+4. Other
+The source file can be created with a text editor. Giving start information to the assemble output
+Therefore, write the start field and start address at the end like test.txt. binload
+See also description.
+
+5. Reference
+The assembler has a self start format for CPLDP-8, and the following changes have been made.
+Original binary: DEC-08-ASC1-PB
+The path is specified by the switch, but path 1 to path 3 are automatically executed.
+0217 TAD 0053 Å® 0000 / Non-execution code Used to store the pass number
+
+0226 CLA OSR Å® CLA CLL CML RTR / 2000 Å® AC
+0227 AND 0124 Å® TAD 0217 / Corresponds to the next PASS to be executed
+0230 SNA Å® DCA 0217 / Create switch register value
+0231 JMP 0240 Å® TAD 0217
+
+Binary output The number of trailing 80 (hexadecimal) is changed from 32 to 1, eliminating unnecessary input at the start of binary execution.
+1274 7740 Å® 7777

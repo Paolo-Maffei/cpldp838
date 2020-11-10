@@ -1,0 +1,10 @@
+C;   FACTORIALS
+     F=1.0
+     DO 10 I=1,10
+     FI=I
+     F=F*FI
+     TYPE 100,I,F
+10;  CONTINUE
+     STOP
+100; FORMAT(I,E,/)
+     END

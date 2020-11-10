@@ -1,0 +1,35 @@
+11 10  9  8  7  6  5  4  3  2  1  0  bit
+ 0  1  2  3  4  5  6  7  8  9 10 11  bit (PDP-8)
+
+ 4  3  2  1  0                       ir[] (instruction register)
+          8  7  6  5  4  3  2  1  0  mc[] (microcode)
+
+ C  C  C  I  Z  A  A  A  A  A  A  A  memory reference instruction
+ 0  0  0                             AND
+ 0  0  1                             TAD
+ 0  1  0                             ISZ
+ 0  1  1                             DCA
+ 1  0  0                             JMS
+ 1  0  1                             JMP
+
+ 1  1  0  D  D  D  D  D  D  P  P  P  IOT
+          0  0  0  0  0  0           interrupt management
+          0  0  0  0  1  1           console TTY in
+          0  0  0  1  0  0           console TTY out
+          0  1  0  F  F  F           memory management
+
+ 1  1  1  0  C  C  C  C  R  R  B  I  group 1 microcoded instruction
+             L  L  M  M  A  A  S  A
+             A  L  A  L  R  L  W  C
+
+ 1  1  1  1  C  S  S  S  0        0  group 2 (OR)
+             L  M  Z  N
+             A  A  A  L
+
+ 1  1  1  1  C  S  S  S  1        0          (AND)
+             L  P  N  Z
+             A  A  A  L
+
+ 1  1  1  1              0  O  H  0          (Priviledged)
+                            S  L
+                            R  T

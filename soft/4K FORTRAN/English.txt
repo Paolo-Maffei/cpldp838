@@ -1,0 +1,34 @@
+Usage of 4K FORTRAN in CPLDP-8 and termin
+
+1. Manual
+4K FORTRAN PROGRAMMER'S REFERENCE MANUAL (DEC-08-AFCO-D)
+
+2. Compilation procedure
+Reset CPLDP-8.
+Specify test.bin (compiled output) in [Receive]-[Raw File].
+Send ft4cmpl.ssb (compiler) with [Send]-[Raw File].
+After loading the compiler.
+Send test.txt (source) with [Send]-[Text File].
+Stop at the end of compilation.
+Click [Receive]-[End] to close the output file.
+
+The source file can be created with a text editor.
+The file name of the source and compiled output may be appropriate including the extension.
+
+3. Execution procedure
+Reset CPLDP-8.
+Send ft4os.ssb (FORTRAN OS) with [Send]-[Raw File].
+After loading the OS.
+Send test.bin (compiled output) with [Send]-[Binary File].
+Stop after reading. Execute by pressing the CONTINUE switch.
+
+4. Diagnosis when compiling is not possible
+If you display the compile output file on the screen without specifying it in step 2, if there is an error, it will be on the last line.
+An error code is displayed. See APPENDIX G in the manual for the meaning.
+(Note: There is no error code in the attached test.txt)
+
+5. Reference
+The compiler and OS are in the self start format for CPLDP-8.
+Original binary
+Compiler: DEC-08-AFC1-PB
+OS: DEC-08-AFC3-PB

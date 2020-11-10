@@ -1,0 +1,43 @@
+PALIIIアセンブラのCPLDP-8とterminでの使用法
+
+1. マニュアル
+PAL III SYMBOLIC ASSEMBLER PDP-8 PROGRAMMING MANUAL (DEC-08-ASAC-D)
+
+2. アセンブル手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で pal3.ssb (アセンブラ)を送る。
+[Send]-[Text File] で test.txt (ソース)を送る(パス1)。
+停止したら。CONTINUEスイッチを押して、
+[Receive]-[Raw File] で test.bin (アセンブル出力)を指定。
+[Send]-[Text File] で test.txt を送る(パス2)。
+停止したら。
+[Receive]-[End] で出力ファイルを閉じる。
+以下は省略可能。
+CONTINUEスイッチを押して、
+[Send]-[Text File] で test.txt を送る(パス3)。
+ソースリストが出力される。
+
+3. 実行手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で binload.ris (binary loader)を送る。
+(binload.ris は \soft\utility に収録)
+[Send]-[Raw File] で test.bin (アセンブル出力バイナリ)を送ると実行が始まる。
+
+4. その他
+ソースファイルはテキストエディタで作成できる。アセンブル出力に開始情報を与えるた
+め、test.txtのように末尾に開始フィールドと開始アドレスを記述しておく。binloadの
+説明も参照。
+
+5. 参考
+アセンブラはCPLDP-8用のself start形式にしたほか、以下の変更を加えた。
+元のbinary: DEC-08-ASC1-PB
+パスをスイッチで指定するのを、自動でパス1～パス3を実行するようにした。
+0217 TAD 0053 → 0000            / 非実行コード パス番の記憶場所に使う
+
+0226 CLA OSR  → CLA CLL CML RTR / 2000→AC
+0227 AND 0124 → TAD 0217        / 次に実行するPASSに相当する
+0230 SNA      → DCA 0217        / スイッチレジスタの値を作る
+0231 JMP 0240 → TAD 0217
+
+バイナリ出力末尾80(16進)の個数を32→1コにしてバイナリ実行開始時の余計な入力をなくす。
+1274 7740     → 7777

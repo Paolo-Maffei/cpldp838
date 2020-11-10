@@ -1,0 +1,29 @@
+SYMBOLIC EDITOR(テキストラインエディタ)のCPLDP-8とterminでの使用法
+
+1. マニュアル
+PDP-8 SYMBOLIC EDITOR PROGRAMMING MANUAL (DEC-08-ESAB-D)
+
+2. 起動方法
+CPLDP-8をリセット。
+[Send]-[Raw File] で symedit.ssb を送る。
+
+3. 最低限の使用法
+最初はコマンド入力モードになっている。
+A[Enter] でテキスト入力モードになる。
+一文字消去は[Delete]キー。
+テキスト入力後 [Ctrl]+[L] でコマンド入力に戻る。
+
+いくつかのコマンド
+L      入力内容の表示(m,nLでm行からn行まで表示)
+nD     n行目を消去(m,nDでm行からn行まで消去)
+nI     n行目の前に挿入(テキスト入力になる)
+nC     n行目を変更(テキスト入力になる)
+
+保存はコマンド入力で P[Enter] により停止状態になるので、[Receive]-[Text File]
+で出力ファイルを指定してCONTINUEスイッチを押す。転送終了後 [Receive]-[End]。
+ファイルからの読み込みは、コマンド入力で R[Enter]、[Send]-[Text File]で送る。
+転送終了後 [Ctrl]+[L] でコマンド入力に戻る。
+
+4. 参考
+元のbinary: DEC-08-ESAC-PB
+CPLDP-8用のself start形式にした。

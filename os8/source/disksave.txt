@@ -1,0 +1,52 @@
+/ CPLDP-8 RAM DISK SAVER
+
+/ CPLDP-8 SPECIAL INSTRUCTION
+EOF=6004                    / EXTRA FIELD OFF
+EON=6007                    / EXTRA FIELD ON
+
+*0000
+LOOP1,  CLA CLL
+        TAD FIELD
+        AND CP0070
+        TAD CCDF
+        DCA DEFLD
+        TAD FIELD
+        RTL
+        RAL
+        AND CP0070
+        TAD CCDF
+        DCA DDFLD
+DEFLD,  HLT                 / DISK EXTRA FIELD
+        EON
+DDFLD,  HLT                 / DISK DATA  FIELD
+        CLA
+        TAD I ADRS
+        EOF
+        TLS
+WAIT1,  TSF
+        JMP WAIT1
+        RTR
+        RTR
+        RTR
+        RTR
+        AND CP0017
+        TLS
+WAIT2,  TSF
+        JMP WAIT2
+        ISZ ADRS
+        JMP DEFLD
+        ISZ FIELD
+        ISZ COUNT1
+        JMP LOOP1
+        HLT
+
+FIELD,  0000
+ADRS,   0000
+COUNT1, 7710
+CP0070, 0070
+CP0017, 0017
+CCDF,   CDF
+
+*7777
+        0000                / START ADDRESS
+$

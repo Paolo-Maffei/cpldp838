@@ -1,0 +1,20 @@
+How to use CHEKMO-II with CPLDP-8 and termin
+
+1. Manual
+Chekmo II (english, original) .pdf
+(This is the file name, I forgot where to get it)
+
+2. How to start
+Send CHEKMOII.ssb with [Send]-[Raw File].
+
+3. Minimal command
+Enter in all capital letters.
+Display BD board
+Set PW computer to white
+Set PB computer to black
+
+To move the piece, specify the coordinates before and after the movement like A2-A4.
+A B ... H from the left, 1 2 ... 8 from the bottom
+Castling O-O King side, O-O-O Queen side (capital O).
+The pawn consists of NBRQ specified as A7-A8 = Q.
+Single character erase is [Del] (not backspace).

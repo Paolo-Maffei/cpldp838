@@ -1,0 +1,113 @@
+/ LINKING LOADER PATCH
+
+FIELD 3
+*0203
+        NOP         / FORCE TTY INPUT
+*0215
+        NOP         / FORCE TTY OUTPUT
+*6262
+        JMP I .+1   / SUBSTITUTION OF OSR
+        GETSW
+*7250
+        JMP I .+1
+        BEGIN
+*7440
+        JMP .-1     / DISABLE TTY TIMEOUT
+
+*7600
+SWU,    0000
+SWL,    0001
+TEMP,   0000
+CC0200, 7600        / 2'S CMPL OF 0200
+CCCHR8, 7510        / 2'S CMPL OF '8'
+CCCHRJ, 7466        / 2'S CMPL OF 'J'
+CCCHRS, 7455        / 2'S CMPL OF 'S'
+C0007,  0007
+C0010,  0010
+CCIF,   6202        / CIF INSTRUCTION CODE
+CCHRCR, 0015        / CARRIAGE RETURN
+CCHRLF, 0012        / LINE FEED
+CCHRAS, 0252        / '*'
+CCHRQU, 0277        / '?'
+
+GETSW,  CLA
+        TAD SWL
+        AND C0007
+        JMP I .+1
+        6264
+
+BEGIN,  CLA
+        DCA SWU
+        DCA SWL
+        TAD CCHRCR
+        JMS PUTCH
+        TAD CCHRLF
+        JMS PUTCH
+        TAD CCHRAS
+        JMS PUTCH
+        KSF
+        JMP .-1
+        KRS
+        TAD CC0200
+        SNA
+        HLT         / 1ST INPUT 200, THEN PAUSE
+LOOP,   KSF
+        JMP .-1
+        KRB
+        DCA TEMP
+        TAD TEMP
+        TAD CC0200
+        SNA CLA
+        JMP LOOP    / IGNORE 200
+        TAD TEMP
+        JMS PUTCH
+        TAD TEMP
+        TAD CCCHR8
+        SMA
+        JMP CMD1
+        TAD C0010
+        SPA
+        JMP CMD1
+        DCA TEMP     / INPUT IS '0' TO '7'
+        TAD SWL
+        RTL
+        RTL
+        AND C0007
+        DCA SWU
+        TAD SWL
+        CLL RAL
+        CLL RAL
+        CLL RAL
+        TAD TEMP
+        DCA SWL
+        JMP LOOP
+CMD1,   CLA
+        TAD TEMP
+        TAD CCCHRS
+        SZA CLA
+        JMP CMD2
+        TAD SWL     / INPUT IS 'S'
+        JMP I .+1
+        7252
+CMD2,   TAD TEMP
+        TAD CCCHRJ
+        SZA CLA
+        JMP CMD3
+        TAD SWU     / INPUT IS 'J'
+        CLL RAL
+        RTL
+        TAD CCIF
+        DCA .+1
+        0000
+        JMP I SWL
+CMD3,   TAD CCHRQU  / UNKNOWN COMMAND
+        JMS PUTCH
+        JMP LOOP
+
+PUTCH,  0000
+        TLS
+        TSF
+        JMP .-1
+        CLA
+        JMP I PUTCH
+$

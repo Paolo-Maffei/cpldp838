@@ -1,0 +1,22 @@
+LISPのCPLDP-8とterminでの使用法
+
+1. マニュアル
+A LISP INTERPRETER FOR THE PDP-8 (DECUS-8-102A)
+
+2. 起動方法
+CPLDP-8をリセット。
+[Send]-[Raw File] で lisp.ssb (インタプリタ)を送る。
+CDR((A B)) と入力して (B) と出力されればOK。
+
+プログラム例(LISP1.5に準拠)
+DEFINE(((LAST (LAMBDA(X)
+          (COND ((NULL (CDR X)) (CAR X))
+                (T (LAST (CDR X))))
+))))
+LAST((A B C))
+
+3. 参考
+元のbinary: DECUS-8-102A
+高速紙テープリーダ専用の特別なローダで自動起動するため、そのままでは使えない。
+80Hのleader/trailerで区切られた3つめの部分が通常のbinaryなので抽出してCPLDP-8
+用のself start形式にした。

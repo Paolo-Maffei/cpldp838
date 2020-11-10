@@ -1,0 +1,22 @@
+LISP usage with CPLDP-8 and termin
+
+1. Manual
+A LISP INTERPRETER FOR THE PDP-8 (DECUS-8-102A)
+
+2. How to start
+Reset CPLDP-8.
+Send lisp.ssb (interpreter) with [Send]-[Raw File].
+If you enter CDR ((A B)) and output (B), it's OK.
+
+Program example (compliant with LISP 1.5)
+DEFINE (((LAST (LAMBDA (X))
+           (COND ((NULL (CDR X)) (CAR X))
+                 (T (LAST (CDR X))))
+))))
+LAST ((A B C))
+
+3. Reference
+Original binary: DECUS-8-102A
+Since it is automatically started by a special loader dedicated to high-speed paper tape readers, it cannot be used as it is.
+Since the third part separated by 80H leader / trailer is a normal binary, extract it and CPLDP-8
+Made into self start format for.

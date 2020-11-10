@@ -1,0 +1,29 @@
+#include "resource.h"
+
+IDM_MAIN MENU
+BEGIN
+    MENUITEM "E&xit", IDM_EXIT
+    POPUP "&Send"
+    BEGIN
+        MENUITEM "&Raw\aFile",      IDM_SEND_RAW
+        MENUITEM "&Binary\aFile",   IDM_SEND_BIN
+        MENUITEM "&Text\aFile",     IDM_SEND_TXT
+        MENUITEM "&End",            IDM_SEND_END
+    END
+    POPUP "&Receive"
+    BEGIN
+        MENUITEM "&Raw\aFile",      IDM_RECV_RAW
+        MENUITEM "&Text\aFile",     IDM_RECV_TXT
+        MENUITEM "&End",            IDM_RECV_END
+    END
+    MENUITEM "&Clear", IDM_CLEAR
+END
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE   "termin VT52 v2.2"
+    IDS_ERR_CAPTION "Error"
+    IDS_ERR_ARG     "usage: vt52 ""COM port"" ""home directory"" ""character interval"""
+    IDS_ERR_COM     "cannot open serial port"
+    IDS_ERR_FILE    "cannot open file"
+END

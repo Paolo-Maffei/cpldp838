@@ -1,0 +1,20 @@
+CHEKMO-IIのCPLDP-8とterminでの使用法
+
+1. マニュアル
+Chekmo II (english, original).pdf
+(これがファイル名、入手先失念)
+
+2. 起動法
+[Send]-[Raw File] で CHEKMOII.ssb を送る。
+
+3. 最低限のコマンド
+すべて大文字で入力。
+BD 盤面を表示
+PW コンピュータを白番に設定
+PB コンピュータを黒番に設定
+
+駒の移動は A2-A4 のように移動前後の座標を指定。
+左から A B ... H、下から 1 2 ... 8
+キャスリング O-O キング側、O-O-O クイーン側(大文字のオー)。
+ポーンの成りは A7-A8=Q のようにNBRQを指定。
+一文字消去は[Del](backspaceではない)。

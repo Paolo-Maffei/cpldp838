@@ -1,0 +1,103 @@
+8K FORTRAN CPLDP-8 and termin usage
+
+1. Manual
+8K FORTRAN / SABR ASSEMBLER DEC-08-LPTNA-A-D
+(Not available)
+programmingLanguages_May70.pdf (file name on the net)
+CHAPTER 14,15
+PDP-8 FAMILY PAPER TAPE SYSTEM USER'S GUIDE DEC-08-NGCC-D
+SECTION 2
+
+2. Source error check (optional)
+Reset CPLDP-8.
+Send ft8err.ssb (error checker) with [Send]-[Raw File].
+When PDP-8 FORTRAN DEC-08-A2B1-4 is displayed.
+Send test.txt (source) with [Send]-[Text File].
+If there is a mistake, the location and contents will be displayed (otherwise nothing will be displayed).
+
+3. Compile
+Reset CPLDP-8.
+Specify test.sab (compiled output) in [Receive]-[Text File].
+Send ft8cmpl.ssb (compiler) with [Send]-[Raw File].
+Send test.txt (source) with [Send]-[Text File].
+After stopping.
+Click [Receive]-[End] to close the output file.
+
+4. Assemble
+Reset CPLDP-8.
+Send sabr.ssb (assembler) with [Send]-[Raw File].
+Answer N twice to the question.
+Specify test.bin (assemble output) in [Receive]-[Raw File].
+Send test.sab (compiled output) with [Send]-[Text File] (path 1).
+Looks like you haven't done anything for quite some time. After stopping.
+Send test.sab with [Send]-[Text File] (path 2).
+Press the CONTINUE switch.
+After stopping.
+Click [Send]-[End] to close the input file.
+Click [Receive]-[End] to close the output file.
+
+5. Run
+Reset CPLDP-8.
+Send lload.ssb (loader) with [Send]-[Raw File].
+When PDP-8 LINKING LOADER DEC-08-A2C3-07 is displayed.
+Send test.bin (assembled output) with [Send]-[Raw File].
+After stopping.
+Click [Send]-[End] to close the input file.
+At this point, exit termin and restart it.
+Press the CONTINUE switch.
+Send lib1 (library) with [Send]-[Raw File].
+Enter 2000S when it is in the standby state with * displayed. In the display
+MAIN 10212
+Is the starting address.
+* Executed by inputting 10212J for the display.
+
+6. Explanation
+The part that requires switch input of the loader was modified to terminal input.
+XXXXS (XXXX is an octal number up to 4 digits) can be continued with the switch set to XXXX
+0S-7S is a load to field 0-7 (only S is the same as 0S).
+2000S is a map display.
+See the manual for the meaning of the values. Since it was modified exclusively for teletype input, bits 6 and 7 must be set to 1.
+No need.
+XXXXXJ (XXXXX is an octal number up to 5 digits) starts execution from XXXXX.
+
+The lib1 lib2 library was modified to be loaded by sending the above S command by myself.
+lib1 is loaded in field 0 and lib2 is loaded in field 7.
+You also need to load lib2 to use real functions like SIN.
+
+Since the loader does not read the binary to the end, quit termin once and clean the serial garbage
+Exclude. When using USB-serial conversion, PurgeComm () could not remove it.
+Since there is no other use than here, termin does not have a connection disconnection function.
+
+5. Reference
+Each program has a self start format for CPLDP-8, and the following changes have been made.
+
+ft8err.ssb
+Original binary: DEC-08-A2B1-PB
+field 0
+0356 DCA Z 0154 Å® DCA Z 0075 Suppressing compiler output
+0547 RSF Å® KSF Input from high-speed paper tape reader to teletype
+0551 RRB RFC Å® KRB
+
+ft8cmpl.ssb
+Original binary: DEC-08-A2B1-PB
+field 0
+0547 RSF Å® KSF Input from high-speed paper tape reader to teletype
+0551 RRB RFC Å® KRB
+5340 PSF Å® TSF output from high-speed paper tape puncher to teletype
+5342 PLS Å® TLS
+7170 TSF Å® NOP Eliminate teletype output
+7171 JMP Å® NOP
+7172 TLS Å® NOP
+
+sabr.ssb
+Original binary: DEC-08-A2C2-PB
+6626 CDF Å® JMP 6643 Eliminate input timeout
+
+lload.ssb
+Original binary: DEC-08-A2C3-PB
+Additions and corrections are added later by assembling lpatch.txt.
+
+lib1
+Original binary: DEC-08-A2B4-PR 8K FORTRAN Library Subroutines part1
+lib2
+Original binary: DEC-08-A2B5-PR 8K FORTRAN Library Subroutines part2

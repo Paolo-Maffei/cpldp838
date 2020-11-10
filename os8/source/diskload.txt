@@ -1,0 +1,51 @@
+/ CPLDP-8 RAM DISK LOADER
+
+/ CPLDP-8 SPECIAL INSTRUCTION
+EOF=6004                    / EXTRA FIELD OFF
+EON=6007                    / EXTRA FIELD ON
+
+*0000
+START,  KCC
+LOOP1,  TAD FIELD
+        AND CP0070
+        TAD CCDF
+        DCA DEFLD
+        TAD FIELD
+        RTL
+        RAL
+        AND CP0070
+        TAD CCDF
+        DCA DDFLD
+LOOP2,  KSF
+        JMP .-1
+        KRB
+        DCA TEMP
+        KSF
+        JMP .-1
+        KRB
+        CLL RAR
+        RTR
+        RTR
+        TAD TEMP
+DEFLD,  HLT                 / DISK EXTRA FIELD
+        EON
+DDFLD,  HLT                 / DISK DATA  FIELD
+        DCA I ADRS
+        EOF
+        ISZ ADRS
+        JMP LOOP2
+        ISZ FIELD
+        ISZ COUNT
+        JMP LOOP1
+        HLT
+
+FIELD,  0000
+ADRS,   0000
+TEMP,   0000
+COUNT,  7710
+CP0070, 0070
+CCDF,   CDF
+
+*7777
+        0000                / START ADDRESS
+$

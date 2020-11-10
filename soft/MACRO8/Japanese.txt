@@ -1,0 +1,53 @@
+MACRO-8アセンブラのCPLDP-8とterminでの使用法
+
+1. マニュアル
+MACRO-8 PROGRAMMER'S REFERENCE MANUAL (DEC-08-CMAB-D)
+
+2. アセンブル手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で macro8.ssb (アセンブラ)を送る。
+[Send]-[Text File] で test.txt (ソース)を送る(パス1)。
+停止したら。CONTINUEスイッチを押して、
+[Receive]-[Raw File] で test.bin (アセンブル出力)を指定。
+[Send]-[Text File] で test.txt を送る(パス2)。
+停止したら。
+[Receive]-[End] で出力ファイルを閉じる。
+以下は省略可能。
+CONTINUEスイッチを押して、
+[Send]-[Text File] で test.txt を送る(パス3)。
+ソースリストが出力される。
+
+3. 実行手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で binload.ris (binary loader)を送る。
+(binload.ris は \soft\utility に収録)
+[Send]-[Raw File] で test.bin (アセンブル出力バイナリ)を送ると実行が始まる。
+
+4. その他
+ソースファイルはテキストエディタで作成できる。test.txtのように末尾に開始フィー
+ルドと開始アドレスを記述してバイナリ出力にbinload用の開始情報を与える。
+literalを使った場合は上記の開始情報を末尾に置くためPAGEによりliteralを先に排出
+しておく。ただしpage 0 literalは必ず最後に出力されるため、使用できない。
+
+5. 参考
+アセンブラはCPLDP-8用のself start形式にしたほか、自動でパス1～パス3を実行する
+ようにした。
+元のbinary: DEC-08-CMA1-PB
+3256 JMP I 102 → JMP 0177  / HLTの後0200から再開するためNOPのある0177へJMP
+2326～パス選択部分を以下に変更。
+2327 ISZ 2337
+2330 SKP
+2331 JMP 2342               / PASS3
+2332 TAD 2337
+2333 IAC
+2334 SZA CLA
+2335 JMP I 2323             / PASS1
+2336 JMP I 2324             / PASS2
+2337 7775 
+
+バイナリ出力末尾を80(16進)1コにしてバイナリ実行開始時の余計な入力をなくす。
+3126 TAD 0164 → CLA CMA (80を数えるカウンタ初期値-128の代わりに-1)
+3254 JMS I 3257 → NOP (シンボルテーブル出力をやめる)
+副作用としてDDT(デバッガ)用のシンボルテーブル出力がなくなる。
+3254の変更を戻すにはバイナリエディタでmacro8.ssbを開き
+1216バイトの38 00 → 26 2F

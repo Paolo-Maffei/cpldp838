@@ -1,0 +1,53 @@
+How to use MACRO-8 assembler with CPLDP-8 and termin
+
+1. Manual
+MACRO-8 PROGRAMMER'S REFERENCE MANUAL (DEC-08-CMAB-D)
+
+2. Assembling procedure
+Reset CPLDP-8.
+Send macro8.ssb (assembler) with [Send]-[Raw File].
+Send test.txt (source) with [Send]-[Text File] (path 1).
+If you stop. Press the CONTINUE switch,
+Specify test.bin (assemble output) in [Receive]-[Raw File].
+Send test.txt with [Send]-[Text File] (path 2).
+If you stop.
+Click [Receive]-[End] to close the output file.
+The following can be omitted.
+Press the CONTINUE switch,
+Send test.txt with [Send]-[Text File] (path 3).
+The source list is output.
+
+3. Execution procedure
+Reset CPLDP-8.
+Send binload.ris (binary loader) with [Send]-[Raw File].
+(binload.ris is in \ soft \ utility)
+Send test.bin (assembled output binary) with [Send]-[Raw File] to start execution.
+
+4. Other
+The source file can be created with a text editor. Start fee at the end like test.txt
+Describe the start address and give the start information for binload to the binary output.
+When literal is used, the above start information is placed at the end, so literal is ejected first by PAGE.
+I will do it. However, page 0 literal is always output last, so it cannot be used.
+
+5. Reference
+The assembler is in the self start format for CPLDP-8, and paths 1 to 3 are automatically executed.
+I did.
+Original binary: DEC-08-CMA1-PB
+3256 JMP I 102 Å® JMP 0177 / JMP to 0177 with NOP to restart from 0200 after HLT
+2326 ~ Changed the path selection part to the following.
+2327 ISZ 2337
+2330 SKP
+2331 JMP 2342 / PASS3
+2332 TAD 2337
+2333 IAC
+2334 SZA CLA
+2335 JMP I 2323 / PASS1
+2336 JMP I 2324 / PASS2
+2337 7775
+
+Binary output End to 80 (hexadecimal) 1 to eliminate unnecessary input at the start of binary execution.
+3126 TAD 0164 Å® CLA CMA (counter initial value counting 80--1 instead of -128)
+3254 JMS I 3257 Å® NOP (Stop symbol table output)
+As a side effect, there is no symbol table output for DDT (debugger).
+To get the 3254 changes back, open macro8.ssb in a hex editor
+1216 bytes 38 00 Å® 26 2F

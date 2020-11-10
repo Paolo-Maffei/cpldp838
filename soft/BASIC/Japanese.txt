@@ -1,0 +1,23 @@
+8K BASICのCPLDP-8とterminでの使用法
+
+1. マニュアル
+8K BASIC (DEC-08-LBSMA-A-D)
+
+2. 起動方法
+CPLDP-8をリセット。
+[Send]-[Raw File] で basic.ssbを送る。
+READY. 表示が出て入力待ちになる。
+
+3. 使用上のヒント
+SCR でBASICの記憶領域を初期化。
+変数名は英文字1字または英文字1字と数字1字。
+プログラムを[Send]-[Text File]で送ると文字落ちが生ずる。BASICの行編集が間に合わ
+ないためで、本物のPDP-8とテレタイプの組み合わせでも起こる。これを防ぐためプログ
+ラムの保存にはLISTでなく LIST* を使うと改行部分に時間かせぎのNULL文字が挿入され
+る。PC上で作成したプログラムを使える変換ソフト addnull.exe を用意した。
+使用法: MS-DOS/Windowsコマンドラインで
+  addnull 元のファイル名 変換後のファイル名
+
+4. 参考
+元のbinary: DEC-08-LBASA-A-PB
+CPLDP-8用のself start形式にした。

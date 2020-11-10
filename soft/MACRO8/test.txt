@@ -1,0 +1,43 @@
+/ PRINT STRING
+
+DEFINE STO X
+<DCA X; TAD X>
+
+FIELD  0
+*0200
+        CLA
+        DCA INDEX
+LOOP,   CLA CLL
+        TAD INDEX
+        RAR
+        TAD (STRING)
+        DCA TEMP
+        TAD I TEMP
+        SZL
+        JMP .+4
+        RTR
+        RTR
+        RTR
+        AND (0077)
+        SNA
+        HLT
+        STO TEMP
+        CMA RAL
+        AND (0100)
+        TAD TEMP
+        TLS
+        TSF
+        JMP .-1
+        ISZ INDEX
+        JMP LOOP
+
+STRING, TEXT /HELLO WORLD/
+INDEX,  0
+TEMP,   0
+
+/ THESE ARE CPLDP-8 SPECIFIC
+PAGE            / FLUSH OUT LITERALS IF USED
+/ THIS MUST BE AT THE END OF THE CODE
+FIELD  0        / START ADDRESS FOR SPECIAL BIN LOADER
+*0200
+$

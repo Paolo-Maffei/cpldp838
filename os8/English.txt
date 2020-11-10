@@ -1,0 +1,212 @@
+CPLDP-8 OS / 8 Manual
+
+Note
+Since OS / 8 does not allow key advance input, it does not operate until the prompt is displayed.
+Command input is always uppercase. It does not recognize lowercase letters and returns ?.
+
+1. How to boot OS / 8
+Put diskload.ris and os8a.rf in the default folder of termin
+Start termin. Reset CPLDP-8
+Send diskload.ris with [Send]-[Raw file]
+Send os8a.rf with [Send]-[Raw file]
+Stop in about 4 minutes Reset CPLDP-8 Press spacebar
+When. Is displayed, wait for OS command input.
+[Del] to cancel one character of input. Cancel one line with [Ctrl] + [U].
+
+To save the disc after work
+Reset CPLDP-8 while waiting for a command
+Specify the save file name with [Receive]-[Raw File]
+Send disksave.ris with [Send]-[Raw file]
+After stopping
+Close the output file with [Receive]-[End]
+
+Reference: The boot ROM executes the RIM loader when the first byte is 80H or the next bit of MSB is 1, and it
+Other than that, OS / 8 is started. At OS / 8, this 1 byte is discarded.
+
+2. Frequently used commands
+DIR (DIRECTORY) Display file list (by name in DIR / A)
+Delete DEL (DELETE) file
+REN (RENAME) Rename file REN New name <Old name
+Copy of COPY file COPY Copy destination <Copy source
+TY (TYPE) Text file printing
+*? Wildcards can be used.
+The device name of the disk cannot be SYS: or RF :.
+A continuous area is required to write a file. Collect free space if necessary.
+.SQUISH SYS:
+Enter Y in ARE YOU SURE ?.
+
+OS / 8 manual
+AA-H607-TA OS / 8 SYSTEM REFERENCE MANUAL
+AA-H608-TA OS / 8 TECO REFERENCE MANUAL
+AA-H609-TA OS / 8 LANGUAGE REFERENCE MANUAL
+DEC-S8-OSHBA-A-D OS / 8 handbook 1974 is an exhaustive but older version.
+
+3. How to create a text file
+Since EDIT takes time and effort, it is a method to pour in what you edited on your PC.
+.R PIP
+* TEST.TX <TTY: / A (Create TEST.TX / A is an ASCII mode option)
+When waiting for input, send the file prepared by [Send]-[Text] of termin
+After transfer, press [Ctrl] + [Z] to exit *, then press [ESC] to exit.
+
+4. SIMH
+You can add software to os8a.rf on your PC using the PDP-8 simulator SIMH and os8pack.
+Changed os8.txt to below
+SET DF DISABLE
+SET RF ENABLE 1P
+ATT RF os8a.rf
+ATT RK0 os8.rk05
+BOOT RK0
+The device name for os8a.rf is RF:
+After work, update os8a.rf by the following operation
+[Ctrl] + [E] (Return to SIMH)
+DET RF (write image file)
+
+To apply SQUISH RF: to os8a.rf with SIMH, change the PIP.SV of SYS: to the one for capacity 224K in os8a.rf.
+Need to be replaced.
+
+5. How to run paper tape software on OS / 8
+Add below to os8.txt in the above SIMH environment
+ATT PTR XXX (XXX is the binary file to read)
+.R PIP
+* RF: XXX.BN <PTR: / B
+Exit with Ctlr-Z [ESC] when ^ is displayed
+On OS / 8 of CPLDP-8
+.R ABSLDR
+* XXX.BN = 002.0 / G (00200 is the starting address that differs depending on the software)
+ABSLDR checks checksum, so the binary file needs to be the original, not for CPLDP-8.
+Immediately after without / G to make XXX.SV executable with R command
+.SAVE RF XXX
+
+-------------------------------------------------- ------------------------------
+Easy usage of each software
+
+1. PAL8
+Assemble and execute TEST.PA on disk.
+.R PAL8
+* TEST / G
+
+2. FORTRAN II
+Compile and run TEST2.FT on disk.
+.R FORT
+* TEST2 / G
+Related files
+FORT.SV LIB8.RL LIBSET.SV LOADER.SV SABR.SV
+
+3. FORTRAN IV
+Compile and run TEST4.FT on disk.
+.R F4
+* TEST4 / G
+When * is displayed, [ESC]
+The final * can tell you to assign the file to a FORTRAN device. [ESC] is the end of instruction.
+See the FRTS section of the manual for details.
+Related files
+F4.SV FORLIB.RL FRTS.SV LIBRA.SV LOAD.SV PASS2.SV PASS2O.SV PASS3.SV RALF.SV
+
+4. BASIC
+starting method
+.R BASIC
+Enter NEW when creating a new source with NEW OR OLD
+Enter the file name for *
+Direct execution is not possible.
+If there is no END statement at the end, an error will occur.
+SAVE is required before the end (BYE) if necessary.
+Related files
+BASIC.AF BASIC.FF BASIC.SF BASIC.SV BCOMP.SV BLOAD.SV BRTS.SV
+A work area of ??31 blocks is required to run STRTRK.BA. Delete unnecessary files and use SQUISH
+Pack it up.
+
+5. FOCAL71
+starting method
+.R PFOCAL
+DO YOU WANT ... to Y [Enter]
+How to exit
+* LIBRARY EXIT (abbreviation L E)
+Input / output can be switched to a file.
+OPEN INPUT file name
+OPEN OUTPUT file name
+For file output, execute OUTPUT CLOSE at the end.
+Specify TTY: in the file name to return to the console.
+
+6. MACREL
+Assemble and execute TEST.PA on disk.
+.R MACREL
+* TEST <TEST.PA / G
+Related files
+MACREL.SV LINK.SV KREF.SV
+
+The following software is included in os8b.rf.
+7. Rog Algol
+Compile and run TEST.AL on disk.
+.R ALGCOM
+* TEST <TEST
+.R RALGOL
+* TEST.AC (end of line [ESC])
+After execution, press [Ctrl] + [C] to finish.
+Related files
+ALGCOM.SV RALGOL.SV
+
+8. Pascal
+Compile and run TEST.PS on disk.
+.RP, PASCAL, TEST
+.RP, TEST
+Related files
+P.SV PASCAL.PB PASCAL.TX PMD.PB
+
+9. SNOBOL
+Compile and run TEST.SN on disk.
+.R SNOBOL
+* TEST.PA <TEST.SN
+.PAL SNORTS.PR-NB, TEST
+.LOAD SNORTS, TEST
+.SAVE SYS TEST
+.R TEST
+(After LOAD, you can execute it as it is with .START without creating the executable file TEST.SV)
+Related files
+SNOBOL.SV SNORTS.PR SNORTS.BN
+
+10. LISP
+starting method
+.R LISP
+How to exit
+EXIT ()
+Run TEST.LI on disk.
+IOPEN (SYS TEST LI)
+
+11. VISTA
+You need to change termin to VT52 version to work.
+starting method
+.R VISTA
+How to exit
+[Ctrl] + [Z] or [Ctrl] + [C] (forced termination)
+Manual DECUS8-938 VISTA EDITOR
+Related files
+VISTA.SV VCM0.SV
+
+-------------------------------------------------- ------------------------------
+OS / 8 CPLDP-8 version technical explanation
+
+PDP-8 has a maximum memory of 4Kword x 8 = 32Kword due to 3bit field, but CPLDP-8 has an additional 3bit
+It has 32Kword x 8 = 256Kword in the extra field. extra field 111 is normal PDP-8 memory
+000-110 is the RAM disk.
+
+For the inside of OS / 8, refer to OS / 8 software support manual DEC-S8-OSSMB-A-D.
+
+Boot with a real RF08 disk.
+Manual input (or ROM) loader in memory memorizes the first 128 words of block 0 of the disk
+Transfer to 06604 ~ and execute from 06622.
+Transferred 06653 to 07003 to 17647 to 17777 (field 1 resident portion).
+Transfer the latter 128 words (field 0 resident portion) of block 0 to memory 07600 ~ (07750)
+Note that the value is initially rewritten to 07750 in the middle of 0 transfer) 07605 (OS / 8 destructive entry)
+Run from.
+
+CPLDP-8 is deployed directly in memory with boot ROM. The arrangement in block0 is the same as the real thing.
+block0 000 ` 177 ¨ memory 17600 ` 17777 (actual resident part is 17647 ` 17777)
+       200-377 ¨ 07600-07777
+The system device handler from 07607 has been rewritten.
+
+Execution of 07605 transfers blocks 007 to 012 keyb'd monitor to 00000 and executes from 04000.
+Read blocks 013 to 015 user service routine with keyb'd monitor.
+
+os8a.rf creates RF08 disk image (256Kword) with SIMH and 224Kword directory
+Fixed to. PIP and RESORC have their own device information and need a patch. These are the above mani
+See the actual appendix.

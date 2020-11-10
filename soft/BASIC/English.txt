@@ -1,0 +1,23 @@
+8K BASIC CPLDP-8 and termin usage
+
+1. Manual
+8K BASIC (DEC-08-LBSMA-A-D)
+
+2. How to start
+Reset CPLDP-8.
+Send basic.ssb with [Send]-[Raw File].
+READY. Is displayed and waiting for input.
+
+3. Usage tips
+Initialize the BASIC storage area with SCR.
+The variable name is one alphabetic character or one alphabetic character and one number.
+When the program is sent by [Send]-[Text File], characters are dropped. BASIC line editing in time
+It also happens with a combination of real PDP-8 and teletype. Prog to prevent this
+If you use LIST * instead of LIST to save the ram, a null character will be inserted at the newline.
+To. We have prepared addnull.exe, a conversion software that allows you to use programs created on your PC.
+Usage: On the MS-DOS / Windows command line
+   addnull Original file name Converted file name
+
+4. Reference
+Original binary: DEC-08-LBASA-A-PB
+Made self start format for CPLDP-8.

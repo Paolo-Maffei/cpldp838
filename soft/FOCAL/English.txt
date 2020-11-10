@@ -1,0 +1,36 @@
+Usage of FOCAL with CPLDP-8 and termin
+
+1. Manual
+FOCAL Programming Manual (DEC-08-AJAD-D)
+Suitable for getting started with FOCAL.
+ADVANCED FOCAL (DEC-08-AJBB-DL)
+FOCAL grammar book.
+
+2. How to start
+Reset CPLDP-8.
+Send focal.ssb with [Send]-[Raw File].
+* Is displayed in termin and waits for FOCAL input. Enter T 1 + 2,! [Enter] and the display below will appear.
+If you succeed.
+* T 1 + 2,!
+= 3.0000
+*
+
+3. Usage tips
+[Del] (code 7F teletype [RUBOUT] key) to erase one character during input. Canceling the entire line
+[_] (Code 5F teletype [Å©] key).
+Since it is basically only uppercase letters, Caps Lock the keyboard.
+Variable names only recognize the first two characters. For example, A11 and A12 represent the same variable.
+Variable names start with something other than F.
+Erase storage with E ALL. To stop execution, press [Ctrl] + [C].
+If you create a long program with an editor on your PC and load it with termin's [Send]-[Text File]
+Good.
+
+4. Reference
+Original binary: DEC-08-AJAE-PB FOCAL69 + init
+            DEC-08-AJ1E-PB 4 words, 8K overlay
+DEC-08-AJAE-PB uses only the first half (separated by 80H). The second half is quality to the user at startup
+It is a mechanism that can increase the user area without using mathematical functions, but it is troublesome to start.
+Omitted.
+DEC-08-AJ1E-PB is an overlay that improves real number accuracy in the first half and uses 8K memory in the second half.
+Used only in the second half.
+These are combined into one and made into a self start format for CPLDP-8.

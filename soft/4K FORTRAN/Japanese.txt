@@ -1,0 +1,34 @@
+4K FORTRANのCPLDP-8とterminでの使用法
+
+1. マニュアル
+4K FORTRAN PROGRAMMER'S REFERENCE MANUAL (DEC-08-AFCO-D)
+
+2. コンパイル手順
+CPLDP-8をリセット。
+[Receive]-[Raw File] で test.bin (コンパイル出力)を指定。
+[Send]-[Raw File] で ft4cmpl.ssb (コンパイラ)を送る。
+コンパイラ読み込み後。
+[Send]-[Text File] で test.txt (ソース)を送る。
+コンパイル終了で停止。
+[Receive]-[End] で出力ファイルを閉じる。
+
+ソースファイルはテキストエディタで作成できる。
+ソースやコンパイル出力のファイル名は拡張子も含め適当でよい。
+
+3. 実行手順
+CPLDP-8をリセット。
+[Send]-[Raw File] で ft4os.ssb (FORTRAN OS)を送る。
+OS読み込み後。
+[Send]-[Binary File] で test.bin (コンパイル出力)を送る。
+読み込み後停止。CONTINUEスイッチを押すと実行。
+
+4. コンパイルできない場合の診断
+2.でコンパイル出力ファイルを指定せず画面に表示させると、誤りがあれば最後の行に
+エラーコードが表示される。意味はマニュアルのAPPENDIX Gを参照。
+(注：付属のtest.txtではエラーコードは出ない)
+
+5. 参考
+コンパイラ、OSはCPLDP-8用のself start形式にした。
+元のbinary
+コンパイラ: DEC-08-AFC1-PB
+OS        : DEC-08-AFC3-PB

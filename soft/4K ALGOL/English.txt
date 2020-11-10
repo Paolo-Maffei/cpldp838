@@ -1,0 +1,58 @@
+How to use 4K ALGOL (ALGOL-8) with CPLDP-8 and termin
+
+1. Manual
+4K ALGOL (DEC-08-KAYA-D)
+
+2. Compilation procedure
+Reset CPLDP-8.
+Send alg8cmpl.ssb (compiler) with [Send]-[Raw File].
+Enter T in the OPT- display and select teletype I / O.
+Specify test.bin (compiled output) in [Receive]-[Raw File].
+Send test.txt (source) with [Send]-[Text File].
+Stop at the end of compilation.
+Click [Receive]-[End] to close the output file.
+
+3. Execution procedure (when not using functions such as SIN)
+Reset CPLDP-8.
+Send binload.ris (binary loader) with [Send]-[Raw File].
+(binload.ris is in \ soft \ utility)
+Send test.bin (compiled output) with [Send]-[Binary File].
+Executed by sending alg8os3.bin (ALGOL OS) with [Send]-[Raw File].
+
+4. Execution procedure (when using a function)
+Reset CPLDP-8.
+Send binload.ris (binary loader) with [Send]-[Raw File].
+Send test.bin (compiled output) with [Send]-[Binary File].
+Send alg8os4.bin (ALGOL OS) with [Send]-[Raw File].
+After stopping, close alg8os4.bin with [Send]-[End].
+At this point, exit termin and restart it.
+Press the CONTINUE switch.
+Executed by sending alg8os5.bin (ALGOL OVERLAY) with [Send]-[Raw File].
+(Note) Exit termin once to eliminate serial dust. When using USB-serial conversion
+    It could not be removed by PurgeComm ().
+
+5. Diagnosis when compiling is not possible
+If you display the compile output file on the screen without specifying it in step 2, if there is an error, it will be on the last line.
+An error code is displayed. See Chapter 7 of the manual for the meaning.
+(Note: There is no error code in the attached test.txt)
+
+6. Reference
+The compiler is in self start format for CPLDP-8. ALGOL OS boots from binary loader
+Therefore, in addition to adding the start address, the following changes have been made.
+
+alg8cmpl.ssb
+Original binary: DEC-08-KA1A-PB
+alg8os3.bin
+Original binary: DEC-08-KA3A-PB
+alg8os5.bin
+Original binary: DEC-08-KA5A-PB
+
+alg8os4.bin
+Original binary: DEC-08-KA4A-PB
+address
+7516 SMA CLA Å® SKP CLA Input fixed to teletype
+7424 HLT Å® Go to the additional part from JMP IZ 0000 7600
+0000 7600
+7600 HLT
+Go to 7601 JMP I 7602 binary loader
+7602 7701

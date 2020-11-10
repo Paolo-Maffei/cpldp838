@@ -1,0 +1,138 @@
+/ OS-8 FOR CPLDP-8 RAM DISK VERSION
+/ FIELD 0 RESIDENT PORTION
+/ DISK BLOCK 0 200 TO 377
+
+/ CPLDP-8 SPECIAL INSTRUCTION
+EOF=6004                    / EXTRA FIELD OFF
+EON=6007                    / EXTRA FIELD ON
+
+*7600
+4207
+5000
+0000
+0033
+7602
+6213
+5267
+ENTRY,  0000                / 7607: SYSTEM DEVICE HANDLER
+        CLA
+        TAD CCDI
+        RDF
+        DCA REST
+        TAD I ENTRY
+        DCA ARG1
+        TAD ARG1
+        AND CP3700
+        CMA IAC
+        CLL RAL
+        DCA WCOUNT
+        TAD ARG1
+        AND CP0070
+        TAD CCDF
+        DCA RBFLD
+        TAD RBFLD
+        DCA WBFLD
+        ISZ ENTRY
+        TAD I ENTRY
+        DCA BUFADR
+        ISZ ENTRY
+        TAD I ENTRY
+        RTR
+        RTR
+        DCA DSKFLD
+        TAD DSKFLD
+        RAR
+        AND CP7400
+        DCA DSKADR
+LOOP,   TAD DSKFLD
+        AND CP0070
+        TAD CCDF
+        DCA REFLD
+        TAD REFLD
+        DCA WEFLD
+        TAD DSKFLD
+        RTL
+        RAL
+        AND CP0070
+        TAD CCDF
+        DCA RDFLD
+        TAD RDFLD
+        DCA WDFLD
+        TAD ARG1
+        SPA CLA
+        JMP WBFLD
+REFLD,  HLT                 / DISK EXTRA  FIELD
+        EON
+RDFLD,  HLT                 / DISK DATA   FIELD
+        TAD I DSKADR
+        EOF
+RBFLD,  HLT                 / READ BUFFER FIELD
+        DCA I BUFADR
+        ISZ WCOUNT
+        JMP RNEXT
+        JMP EXIT
+RNEXT,  ISZ BUFADR
+        NOP
+        ISZ DSKADR
+        JMP REFLD
+        ISZ DSKFLD
+        JMP LOOP
+WBFLD,  HLT                 / WRITE BUFFER FIELD
+        TAD I BUFADR
+WEFLD,  HLT                 / DISK EXTRA   FIELD
+        EON
+WDFLD,  HLT                 / DISK DATA    FIELD
+        DCA I DSKADR
+        EOF
+        ISZ WCOUNT
+        JMP WNEXT
+        JMP EXIT
+WNEXT,  ISZ BUFADR
+        NOP
+        ISZ DSKADR
+        JMP WBFLD
+        ISZ DSKFLD
+        JMP LOOP
+EXIT,   ISZ ENTRY
+        ISZ ENTRY
+REST,   HLT                 / RESTORE FIELD
+        JMP I ENTRY
+CCDI,   CDF CIF
+CCDF,   CDF
+CP3700, 3700
+CP0070, 0070
+CP7400, 7400
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+WCOUNT, 0000                / 7750: WORD COUNTER
+BUFADR, 0000                /       TRANSFER BUFFER ADDRESS
+DSKADR, 0000                /       RAM DISK ADDRESS
+DSKFLD, 0000                /       RAM DISK FIELD
+ARG1,   0000                /       DEVICE HANDLER ARG(1)
+0000
+7607
+4756
+3700
+0000
+0730
+7402
+5372
+4207
+0300
+7000
+0035
+7402
+6203
+6042
+5775
+0200
+0000
+0000
+$

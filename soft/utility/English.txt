@@ -1,0 +1,69 @@
+Auxiliary software for CPLDP-8 is recorded in this folder.
+-------------------------------------------------- -----------------------------
+Binary Loader
+Executable: binload.ris
+how to use
+Reset CPLDP-8.
+Send binload.ris with [Send]-[Raw File].
+Send the binary file you want to read with [Send]-[Raw File].
+
+See DEC-08-LBAA-D for the binary file format.
+Below is an example of a binary file converted from paper tape (hexadecimal), but there are changes to use with CPLDP-8.
+necessary.
+  00 80 80 80 42 00 ... 10 03 3B 3A 80 80 80 00 00 00
+00 of the blank part of the first tape is harmful, and the leader part of 80 is unnecessary, so remove it.
+The trailer part after 80 at the end is removed leaving only one so that it will not be sent to the software to be executed.
+Execution starts from the last specified field and origin (address), so for example field 0
+Added 48 00 for C0 and address 1000 (octal).
+The 2 bytes just before the trailer are checksum, but the value is ignored, so leave it as it is.
+Examples of making these changes
+  42 00 ... 10 03 C0 48 00 3B 3A 80
+
+If you prepare a loader and a binary file in one, [Send]-[Raw File]
+You can start the binary in one go.
+
+This software converted DEC-08-LBAA-PM to self start format, and made the following changes.
+address (octal)
+7677 TAD Å® JMP 7756
+7707 SMA, CLA Å® CLA Input fixed to teletype
+7710 TAD Å® NOP
+Additional automatic start section
+7756 CLA IAC field Create CIF from CDF instruction for change
+7757 TAD MEMTEM
+7760 DCA .+ 1
+7761 (CIF) Run CIF written in DCA
+7762 JMP I ORIGIN
+
+-------------------------------------------------- -----------------------------
+Conversion from DEC binary to RIS format for RIM or CPLDP-8
+Executable: bin2ris.exe
+how to use
+On the MS-DOS / Windows command line
+RIM format
+  bin2ris <input binary file> output file
+RIS format
+  bin2ris <input binary file> output file -s start address (octal)
+The execution start address is added with the -s option, and it can be booted with the CPLDP-8 boot loader.
+
+-------------------------------------------------- -----------------------------
+PAL-8 compatible cross assembler
+Executable: pal.exe
+how to use
+On the MS-DOS / Windows command line
+Binary format output
+  pal source file
+RIM format output
+  pal source file -r
+
+Building for DOS with some modifications to the sources of Douglas Jones, Rich Coon, Bernhard Baehr and others
+What was done.
+
+-------------------------------------------------- -----------------------------
+Disassembler
+Executable file: disasm8.exe
+how to use
+On the MS-DOS / Windows command line
+  disasm8 <input binary file> output file
+
+It was made up in about an hour for analysis of software that needs correction with CPLDP-8, and then the hand
+In addition, the degree of perfection is low.

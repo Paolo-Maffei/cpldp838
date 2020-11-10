@@ -1,0 +1,67 @@
+termin VT52  v2.2  CPLDP-8用端末ソフト 説明書  omiokone著
+
+この版はterminをVT52端末互換にするためESCシーケンスを追加したもの。
+ただしVISTAエディタを動かすための機能に限られる。
+使用法は通常版と同じ。
+
+VT52同様スクロールした前の画面は見られないので、OS/8では以下の設定をする
+.SET TTY WIDTH 80
+.SET TTY HEIGHT 24
+.SET TTY PAGE
+.SET TTY PAUSE 60
+.SET TTY SCOPE
+これによりDIRなどで一画面を超えた時は一時停止し、[Ctrl]+[S]と[Ctrl]+[Q]で停止
+再開できる。ただしOS/8のデバイスハンドラを使ったソフトでのみ有効。
+この設定はディスクを保存すれば再利用できる。
+これらは設定しなくてもVISTAの動作には影響しない。
+
+キーボードのVISTAでの機能
+
+Tenkey(Num Lockしておく)
+            /            *            -
+            scroll up    scroll down  search
+7           8            9
+first page  page up      last page
+4           5            6            +
+mark line   pick up      put down     command mode
+1           2            3
+word left   page down    word right
+0                        . 
+insert line              home cursor
+
+上のキーはテンキーのない機種用に以下にも割り当ててある
+                normal          shift
+left  arrow     left  arrow     word left
+up    arrow     up    arrow     command mode
+right arrow     right arrow     word right
+down  arrow     down  arrow     mark line
+Insert          insert line     put down
+Delete          delete          pick up
+Home            home cursor     first page
+End             search          last page
+Page Up         page down       scroll down
+Page Down       page up         scroll up
+page up/downはWindowsと意味が逆なので、この割り当てにしてある
+
+以下は本物のVT52と同じ
+Backspace       backspace delete
+Tab             tab right
+ESC 1           insert block
+ESC 2           delete screen
+ESC 3           truncate file
+
+Control Keys
+^A transparent char             ^L delete to end of word
+^B mark modified lines          ^M return code
+^C abort to OS/8                ^N restore screen
+^D cursor to start of line      ^P invert case
+^E tab left                     ^R continuous replace
+^F cursor to end of line        ^T step replace
+^G unmark line                  ^U delete line
+^H backspace delete             ^W cursor away
+^I tab right                    ^Y cursor to next line
+^J insert char toggle           ^Z close file
+^K delete word
+
+2つの行の連結は前の行の末尾に移動して^Uを実行。末尾に...がつく
+(一度スクロールアウトして戻れば1行に表示される)。

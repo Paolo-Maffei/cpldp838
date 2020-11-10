@@ -1,0 +1,103 @@
+8K FORTRANのCPLDP-8とterminでの使用法
+
+1. マニュアル
+8K FORTRAN / SABR ASSEMBLER DEC-08-LPTNA-A-D
+(入手できていない)
+programmingLanguages_May70.pdf (net上にあったファイル名)
+CHAPTER 14,15
+PDP-8 FAMILY PAPER TAPE SYSTEM USER'S GUIDE DEC-08-NGCC-D
+SECTION 2
+
+2. ソースエラーチェック(省略可)
+CPLDP-8をリセット。
+[Send]-[Raw File] で ft8err.ssb (エラーチェッカ)を送る。
+PDP-8 FORTRAN DEC-08-A2B1-4 が表示されたら。
+[Send]-[Text File] で test.txt (ソース)を送る。
+間違いがあれば場所と内容が表示される(なければ何も出ない)。
+
+3. コンパイル
+CPLDP-8をリセット。
+[Receive]-[Text File] で test.sab (コンパイル出力)を指定。
+[Send]-[Raw File] で ft8cmpl.ssb (コンパイラ)を送る。
+[Send]-[Text File] で test.txt (ソース)を送る。
+停止後。
+[Receive]-[End] で出力ファイルを閉じる。
+
+4. アセンブル
+CPLDP-8をリセット。
+[Send]-[Raw File] で sabr.ssb (アセンブラ)を送る。
+質問に2回 N を答える。
+[Receive]-[Raw File] で test.bin (アセンブル出力)を指定。
+[Send]-[Text File] で test.sab (コンパイル出力)を送る(パス1)。
+かなり長い間何もしていないように見える。停止後。
+[Send]-[Text File] で test.sab を送る(パス2)。
+CONTINUEスイッチを押す。
+停止後。
+[Send]-[End] で入力ファイルを閉じる。
+[Receive]-[End] で出力ファイルを閉じる。
+
+5. 実行
+CPLDP-8をリセット。
+[Send]-[Raw File] で lload.ssb (ローダ)を送る。
+PDP-8 LINKING LOADER DEC-08-A2C3-07 が表示されたら。
+[Send]-[Raw File] で test.bin (アセンブル出力)を送る。
+停止後。
+[Send]-[End] で入力ファイルを閉じる。
+ここでterminを一旦終了して再起動する。
+CONTINUEスイッチを押す。
+[Send]-[Raw File] で lib1 (ライブラリ)を送る。
+* の表示で待機状態になったら、2000S と入力。表示の中の
+MAIN    10212
+が開始アドレス。
+* 表示に対し 10212J の入力で実行される。
+
+6. 解説
+ローダのスイッチ入力が必要な部分を端末入力に改造した。
+XXXXS (XXXXは4桁までの8進数)はスイッチをXXXXにしての続行で
+0S ～ 7S はfield 0～7へのロード(Sのみは0Sと同じ)。
+2000S はマップ表示。
+値の意味はマニュアルを参照。テレタイプ入力専用に改造したのでbit 6,7を1にする必
+要はない。
+XXXXXJ (XXXXXは5桁までの8進数)はXXXXXからの実行開始。
+
+lib1 lib2のライブラリは自分で上記のSコマンドを送ってロードされるよう改造した。
+lib1はfield 0、lib2はfield 7にロードされる。
+SINのような実数関数を使うにはlib2のロードも必要。
+
+ローダはバイナリを最後まで読まないのでterminを一度終了してシリアル系のゴミを
+排除する。USB-serial変換使用の場合PurgeComm()では除去しきれなかった。
+ここ以外に使い道がないので、terminに接続断の機能はつけていない。
+
+5. 参考
+各プログラムはCPLDP-8用のself start形式にしたほか、以下の変更を加えた。
+
+ft8err.ssb
+元のbinary: DEC-08-A2B1-PB
+field 0
+0356 DCA Z 0154 → DCA Z 0075  コンパイラ出力の抑制
+0547 RSF → KSF                入力を高速紙テープリーダからテレタイプにする
+0551 RRB RFC → KRB
+
+ft8cmpl.ssb
+元のbinary: DEC-08-A2B1-PB
+field 0
+0547 RSF → KSF                入力を高速紙テープリーダからテレタイプにする
+0551 RRB RFC → KRB
+5340 PSF → TSF                出力を高速紙テープパンチャからテレタイプにする
+5342 PLS → TLS
+7170 TSF → NOP                テレタイプ出力をなくす
+7171 JMP → NOP
+7172 TLS → NOP
+
+sabr.ssb
+元のbinary: DEC-08-A2C2-PB
+6626 CDF → JMP 6643           入力のtimeoutをなくす
+
+lload.ssb
+元のbinary: DEC-08-A2C3-PB
+追加修正部分は lpatch.txt をアセンブルして後に追加。
+
+lib1
+元のbinary: DEC-08-A2B4-PR 8K FORTRAN Library Subroutines part1
+lib2
+元のbinary: DEC-08-A2B5-PR 8K FORTRAN Library Subroutines part2
